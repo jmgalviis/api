@@ -163,3 +163,6 @@ pytest test/
 ## Licencia
 Este proyecto está licenciado bajo la [MIT License](https://opensource.org/licenses/MIT).
 
+
+## Resultado
+![image](https://github.com/jmgalviis/api/blob/main/img.png)

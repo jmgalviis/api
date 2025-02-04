@@ -37,7 +37,8 @@ def calculate_invoice(request: InvoiceRequest, db: Session = Depends(get_db)):
         service_repository=SQLAServiceRepository(db),
         tariffs_repository=SQLATariffsRepository(db),
         injection_repository=SQLAInjectionRepository(db),
-        consumption_repository=SQLAConsumptionRepository(db)
+        consumption_repository=SQLAConsumptionRepository(db),
+        xm_data_hourly_per_agent_repository=SQLAXMDataHourlyPerAgentRepository(db)
     )
     try:
         invoice = invoice_use_case.create_invoice(request.month, request.client_id)

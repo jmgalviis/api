@@ -19,3 +19,17 @@ class SQLAInjectionRepository(InjectionRepository):
         return self._db.query(func.sum(Injection.value))\
             .join(Record, Record.id_record == Injection.id_record)\
             .filter(Record.id_service == client_id).scalar() or 0
+
+    def get_data_by_client_id_and_date(self, client: int, start_date: datetime, end_date: datetime) -> dict:
+        result = (
+            self._db.query(Injection.value, Record.record_timestamp)
+            .join(Record, Injection.id_record == Record.id_record)
+            .filter(
+                Record.id_service == client,
+                Record.record_timestamp.between(start_date, end_date)
+            )
+            .all()
+        )
+        result_dicts = [{"value": row[0], "record_timestamp": row[1]} for row in result]
+
+        return result_dicts
