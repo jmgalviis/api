@@ -28,26 +28,28 @@ class InvoiceUseCase:
         if not tariffs:
             raise ValueError(f'No tariff found for the client {service.id_market}')
         ea = consumption_sum
-
+        ee2 = 0.0
         ea_total = consumption_sum * tariffs.cu
         ec_total = injection_sum * tariffs.c
         if injection_sum <= consumption_sum:
             ee1 = injection_sum * (-tariffs.cu)
         else:
             ee1 = consumption_sum * (-tariffs.cu)
-        if injection_sum <= consumption_sum:
-            ee2 = 0.0
-        else:
-            sumar = 0.0
-            exceso_total = 0.0
-            for injection in injections:
-                sumar = sumar + injection.get('value')
-                if sumar > ea:
-                    exceso_inicio = sumar - ea
-                    xm_data_value = self._xm_data.get_data_by_client_id(client_id, injection.get('record_timestamp'))
-                    multiplicar = exceso_inicio * xm_data_value.get('value')
-                    exceso_total = exceso_total + multiplicar
-            ee2 = exceso_total
+        if injection_sum > consumption_sum:
+            excess_energy = injection_sum - consumption_sum
+            hourly_data = self._xm_data.get_data_by_client_id_and_date(client_id, start_date, end_date)
+            total_ee2 = 0.0
+            remaining_excess = excess_energy
+
+            for record in hourly_data:
+                hourly_value = min(record['value'], remaining_excess)
+                hourly_tariff = record['value']
+                total_ee2 += hourly_value * hourly_tariff
+                remaining_excess -= hourly_value
+                if remaining_excess <= 0:
+                    break
+
+            ee2 = -total_ee2
         return {
             "EA": ea_total,
             "EC": ec_total,

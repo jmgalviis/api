@@ -20,16 +20,15 @@ class SQLAXMDataHourlyPerAgentRepository(XMDataHourlyPerAgentRepository):
             print(f"Error retrieving hourly load: {e}")
             return {"hourly_load": []}
 
-    def get_data_by_client_id(self, client_id: int, start_date: datetime):
+    def get_data_by_client_id_and_date(self, client_id: int, start_date: datetime, end_date: datetime):
         result = (
             self._db.query(XMDataHourlyPerAgent.value, XMDataHourlyPerAgent.record_timestamp)
-            .join(Record, XMDataHourlyPerAgent.record_timestamp == Record.record_timestamp)
+            .join(Record, Record.record_timestamp == XMDataHourlyPerAgent.record_timestamp)
             .filter(
-                Record.record_timestamp ==start_date,
-                Record.id_service == client_id
+                Record.id_service == client_id,
+                XMDataHourlyPerAgent.record_timestamp.between(start_date, end_date)
             )
-            .first()
+            .order_by(XMDataHourlyPerAgent.record_timestamp)
+            .all()
         )
-        result_dicts = {"value": result[0], "record_timestamp": result[1]}
-
-        return result_dicts
+        return [{"value": row[0], "record_timestamp": row[1]} for row in result]

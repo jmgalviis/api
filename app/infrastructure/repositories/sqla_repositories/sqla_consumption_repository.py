@@ -19,3 +19,8 @@ class SQLAConsumptionRepository(ConsumptionRepository):
         return self._db.query(func.sum(Consumption.value))\
             .join(Record, Record.id_record == Consumption.id_record)\
             .filter(Record.id_service == client_id).scalar() or 0
+
+    def get_data_by_client_id_and_date(self, client: int, start_date: datetime, end_date) :
+        return self._db.query(func.sum(Consumption.value)) \
+            .join(Record, Record.id_record == Consumption.id_record) \
+            .filter(Record.id_service == client, Record.record_timestamp.between(start_date, end_date)).scalar() or 0
