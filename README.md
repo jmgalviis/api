@@ -165,4 +165,8 @@ Este proyecto está licenciado bajo la [MIT License](https://opensource.org/lice
 
 
 ## Resultado
-![image](https://github.com/jmgalviis/api/blob/main/img.png)
+![image](https://github.com/jmgalviis/api/blob/main/img_1.png)
+---
+![image](https://github.com/jmgalviis/api/blob/main/img_2.png)
+---
+![image](https://github.com/jmgalviis/api/blob/main/img_2.png)
